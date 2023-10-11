@@ -1,1 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Tablero de Puntos - DOM y JavaScript</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
 
+    <div class="container my-1 my-sm-2 my-md-4 my-lg-5">
+        <h1>Tablero de Puntos</h1>
+        <p class="lead">El objetivo es construir un tablero para mostrar el puntaje de un partido entre 2 equipos.</p>
+        <h2 class="h3">Objetivos Adicionales</h2>
+        <ol>
+            <li>En lugar de tener un único boton para incrementar los puntos del equipo, se desea tener un botón para <strong>incrementar (+)</strong> y otro para <strong>decrementar (-)</strong> los puntos de cada equipo.</li>
+            <li>Agregar la acción de <strong>invertir puntaje</strong>, para intercambiar los puntos entre el equipo local y el equipo visitante.</li>
+            <li>Agregar la acción de <strong>finalizar partido</strong>, que deshabilita los botones de puntaje, para que ya no se puedan sumar puntos. Los botones se tendrían que volver a habilitar cuando se reinicia el tablero.</li>
+        </ol>
+
+    	<!-- Card de Aplicación -->
+        <div class="card">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-5">
+                        <span id="local-score" class="display-1">0</span>
+                        <p class="m-0">Local</p>
+                    </div>
+                    <div class="col-2">
+                        <span class="display-1">:</span>
+                    </div>
+                    <div class="col-5">
+                        <span id="visitante-score" class="display-1">0</span>
+                        <p class="m-0">Visitante</p>
+                    </div>
+                </div>
+    
+                <hr class="hr">
+    
+                <h2>Actualizar Contador</h2>
+                <div class="row">
+                    <div class="col-12 col-sm-4 my-1">
+                        <button class="btn d-block w-100 btn-primary" onclick="incrementarPuntos('local')">
+                            Punto Local (+)
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-4 my-1">
+                        <button class="btn d-block w-100 btn-primary" onclick="incrementarPuntos('visitante')">
+                            Punto Visitante (+)
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-4 my-1">
+                        <button class="btn d-block w-100 btn-danger" onclick="reiniciarTablero()">
+                            Reiniciar
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-4 my-1">
+                        <button class="btn d-block w-100 btn-primary" onclick="decrementarPuntos('local')">
+                            Punto Local (-)
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-4 my-1">
+                        <button class="btn d-block w-100 btn-primary" onclick="decrementarPuntos('visitante')">
+                            Punto Visitante (-)
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-4 my-1">
+                        <button class="btn d-block w-100 btn-primary" onclick="invertirPuntaje()">
+                            Invertir Puntaje
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-4 my-1">
+                        <button class="btn d-block w-100 btn-primary" onclick="finalizarPartido()">
+                            Finalizar Partido
+                        </button>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        let localScore = 0;
+        let visitanteScore = 0;
+        let partidaFinalizada = false;
+    
+        // Function para actualizar
+        function actualizarTablero() {
+            document.getElementById('local-score').textContent = localScore;
+            document.getElementById('visitante-score').textContent = visitanteScore;
+        }
+    
+        // Function para incrementar
+        function incrementarPuntos(equipo) {
+            if (!partidaFinalizada) {
+                if (equipo === 'local') {
+                    localScore++;
+                } else if (equipo === 'visitante') {
+                    visitanteScore++;
+                }
+                actualizarTablero();
+            }
+        }
+    
+        // Function para sacar
+        function decrementarPuntos(equipo) {
+            if (!partidaFinalizada) {
+                if (equipo === 'local' && localScore > 0) {
+                    localScore--;
+                } else if (equipo === 'visitante' && visitanteScore > 0) {
+                    visitanteScore--;
+                }
+                actualizarTablero();
+            }
+        }
+    
+        // Function para invertir
+        function invertirPuntaje() {
+            if (!partidaFinalizada) {
+                const temp = localScore;
+                localScore = visitanteScore;
+                visitanteScore = temp;
+                actualizarTablero();
+            }
+        }
+    
+        // Function para terminar el juego
+        function finalizarPartido() {
+            partidaFinalizada = true;
+            // Desactivar el contador
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach((button) => {
+                button.disabled = true;
+            });
+        }
+    
+        // Function para resetear
+        function reiniciarTablero() {
+            localScore = 0;
+            visitanteScore = 0;
+            partidaFinalizada = false;
+            actualizarTablero();
+    
+            // Habilita los botones, no encuentro el error
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach((button) => {
+                button.disabled = false;
+            });
+        }
+    
+        
+        actualizarTablero();
+    </script>
+    </body>
+    </html>
